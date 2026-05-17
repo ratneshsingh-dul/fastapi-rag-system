@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-multipart
+sqlalchemy
+aiosqlite
+pydantic
+pydantic-settings
+httpx
+pytest
+pytest-asyncio
+openai
+faiss-cpu
+numpy
+pypdf
+python-docx
