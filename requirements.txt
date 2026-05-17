@@ -13,3 +13,4 @@ faiss-cpu
 numpy
 pypdf
 python-docx
+sentence-transformers

@@ -1,38 +1,39 @@
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
-    async_sessionmaker,
     AsyncSession,
+    async_sessionmaker
 )
 
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
+import os
 
-from app.core.config import settings
+# Create data folder automatically
+os.makedirs("data", exist_ok=True)
 
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "sqlite+aiosqlite:///./data/rag.db"
+)
 
 engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=True,
+    DATABASE_URL,
+    echo=True
 )
 
 AsyncSessionLocal = async_sessionmaker(
-    engine,
-    expire_on_commit=False,
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False
 )
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-async def init_db():
-
-    from app.models import document
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+Base = declarative_base()
 
 
 async def get_db():
-
     async with AsyncSessionLocal() as session:
         yield session
+
+
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
